@@ -1,0 +1,23 @@
+list-list sayuran:
+-Tomat
+-Bayam(Hijau)+
+-Bayam(Merah)+
+-wortel 
+-kol
+-brokoli
+-kembang kol
+-timun
+-kentang
+-kancang panjang
+-pare
+-sawi+
+-Daun singkong+
+-Kangkung+
+-terong
+-tauge+
+-melinjo+
+-j.kancing+
+-j.merang+
+-j.timur+
+-j.kuping+
+-j.enoki+
