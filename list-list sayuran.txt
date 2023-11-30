@@ -1,23 +1,23 @@
 list-list sayuran:
--Tomat
--Bayam(Hijau)+
+-Tomat / Tomato
+-Bayam(Hijau)+ 
 -Bayam(Merah)+
--wortel 
--kol
--brokoli
--kembang kol
--timun
--kentang
--kancang panjang
--pare
--sawi+
--Daun singkong+
--Kangkung+
--terong
--tauge+
--melinjo+
--j.kancing+
--j.merang+
--j.timur+
--j.kuping+
--j.enoki+
+-wortel / Carrot
+-kol / Cabbage
+-brokoli / Broccoli
+-kembang kol / Cauliflower
+-timun / Cucumber
+-kentang / potato
+-kancang panjang / String_bean +
+-pare / bitter_groud
+-sawi / collard_greens +
+-Daun singkong / Cassava_leaves +
+-Kangkung / water_spinach +
+-terong / Brinjal
+-tauge / bean_sprouts +
+-melinjo / Gnetum_gnemon + 
+-j.kancing / table_mushrooms +
+-j.merang / chinese_mushroom +
+-j.timur / King_Oyster_Mushroom +
+-j.kuping / Black_Fungus +
+-j.enoki / Enoki_mushrooms +
