@@ -1,4 +1,4 @@
-list-list sayuran:
+list-list sayuran (train/validation/test)(default: 1200/200/200):
 -Tomat / Tomato
 -Bayam(Hijau)+ 
 -Bayam(Merah)+
@@ -8,14 +8,14 @@ list-list sayuran:
 -kembang kol / Cauliflower
 -timun / Cucumber
 -kentang / potato
--kancang panjang / String_bean +
+-kancang panjang / String_bean +(uptdated)(118/25/27)
 -pare / bitter_groud
 -sawi / collard_greens +
--Daun singkong / Cassava_leaves +
+-Daun singkong / Cassava_leaves +(uptdated)(145/31/32)
 -Kangkung / water_spinach +
 -terong / Brinjal
--tauge / bean_sprouts +
--melinjo / Gnetum_gnemon + 
+-tauge / bean_sprouts +(uptdated)(81/17/19)
+-melinjo / Gnetum_gnemon + (uptdated)(88/18/20)
 -j.kancing / table_mushrooms +
 -j.merang / chinese_mushroom +
 -j.timur / King_Oyster_Mushroom +
