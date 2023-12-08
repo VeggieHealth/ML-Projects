@@ -2,6 +2,13 @@
 import tensorflow as tf
 from keras.preprocessing.image import ImageDataGenerator
 import matplotlib.pyplot as plt
+import os
+
+train_dir = "..\\ML-Projects\\Vegetable Images\\train\\"
+validation_dir = "..\\ML-Projects\\Vegetable Images\\validation\\"
+test_dir = "..\\ML-Projects\\Vegetable Images\\test\\"
+
+categories = os.listdir(train_dir)
 
 model = tf.keras.models.Sequential([
     tf.keras.layers.Conv2D(16, (3, 3), activation='relu', input_shape=(150, 150, 3)),
@@ -12,36 +19,34 @@ model = tf.keras.models.Sequential([
     tf.keras.layers.MaxPooling2D(2, 2),
     tf.keras.layers.Conv2D(128, (3, 3), activation='relu'),
     tf.keras.layers.MaxPooling2D(2, 2),
-    tf.keras.layers.Conv2D(128, (3, 3), activation='relu'),
-    tf.keras.layers.MaxPooling2D(2, 2),
+    # tf.keras.layers.Conv2D(128, (3, 3), activation='relu'),
+    # tf.keras.layers.MaxPooling2D(2, 2),
     tf.keras.layers.Flatten(),
-    tf.keras.layers.Dropout(0.5),
+    # tf.keras.layers.Dropout(0.5),
     tf.keras.layers.Dense(512, activation='relu'),
-    tf.keras.layers.Dense(13, activation='softmax')
+    tf.keras.layers.Dense(len(categories), activation='softmax')
 ])
 
 model.compile(optimizer='Adam', loss='categorical_crossentropy', metrics=['accuracy'])
 
 model.summary()
 
-train_dir = "D:\\Bangkit\\Capstone\\ML-Projects\\Vegetable Images\\train\\"
-validation_dir = "D:\\Bangkit\\Capstone\\ML-Projects\\Vegetable Images\\validation\\"
-test_dir = "D:\\Bangkit\\Capstone\\ML-Projects\\Vegetable Images\\test\\"
+
 
 train_datagen = ImageDataGenerator(rescale=1 / 255,
                                    height_shift_range=0.2,
                                    width_shift_range=0.2,
-                                   rotation_range=0.2,
+                                   rotation_range=10,
                                    shear_range=0.2,
                                    fill_mode='nearest',
                                    horizontal_flip=True,
                                    vertical_flip=True)
 
 validation_datagen = ImageDataGenerator(rescale=1 / 255)
-test_datagen = ImageDataGenerator(rescale=1 / 255)
+# test_datagen = ImageDataGenerator(rescale=1 / 255)
 
 train_generator = train_datagen.flow_from_directory(train_dir,
-                                                    batch_size=32,
+                                                    batch_size=64,
                                                     target_size=(150, 150),
                                                     class_mode='categorical',
                                                     shuffle=True
@@ -91,4 +96,4 @@ plt.legend()
 
 plt.show()
 
-model.save("veggiehealth_model_1.h5")
+model.save("veggiehealth_model_2.h5")
