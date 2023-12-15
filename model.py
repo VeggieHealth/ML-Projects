@@ -3,35 +3,13 @@ import tensorflow as tf
 from keras.preprocessing.image import ImageDataGenerator
 import matplotlib.pyplot as plt
 import os
+from keras.optimizers import Adam
 
 train_dir = "..\\ML-Projects\\Vegetable Images\\train\\"
 validation_dir = "..\\ML-Projects\\Vegetable Images\\validation\\"
 test_dir = "..\\ML-Projects\\Vegetable Images\\test\\"
 
 categories = os.listdir(train_dir)
-
-model = tf.keras.models.Sequential([
-    tf.keras.layers.Conv2D(16, (3, 3), activation='relu', input_shape=(150, 150, 3)),
-    tf.keras.layers.MaxPooling2D(2, 2),
-    tf.keras.layers.Conv2D(32, (3, 3), activation='relu'),
-    tf.keras.layers.MaxPooling2D(2, 2),
-    tf.keras.layers.Conv2D(64, (3, 3), activation='relu'),
-    tf.keras.layers.MaxPooling2D(2, 2),
-    tf.keras.layers.Conv2D(128, (3, 3), activation='relu'),
-    tf.keras.layers.MaxPooling2D(2, 2),
-    # tf.keras.layers.Conv2D(128, (3, 3), activation='relu'),
-    # tf.keras.layers.MaxPooling2D(2, 2),
-    tf.keras.layers.Flatten(),
-    # tf.keras.layers.Dropout(0.5),
-    tf.keras.layers.Dense(512, activation='relu'),
-    tf.keras.layers.Dense(len(categories), activation='softmax')
-])
-
-model.compile(optimizer='Adam', loss='categorical_crossentropy', metrics=['accuracy'])
-
-model.summary()
-
-
 
 train_datagen = ImageDataGenerator(rescale=1 / 255,
                                    height_shift_range=0.2,
@@ -40,23 +18,23 @@ train_datagen = ImageDataGenerator(rescale=1 / 255,
                                    shear_range=0.2,
                                    fill_mode='nearest',
                                    horizontal_flip=True,
-                                   vertical_flip=True)
+                                   vertical_flip=True,validation_split=0.1)
 
 validation_datagen = ImageDataGenerator(rescale=1 / 255)
 # test_datagen = ImageDataGenerator(rescale=1 / 255)
 
 train_generator = train_datagen.flow_from_directory(train_dir,
                                                     batch_size=64,
-                                                    target_size=(150, 150),
+                                                    target_size=(224, 224),
                                                     class_mode='categorical',
-                                                    shuffle=True
+                                                    shuffle=True, color_mode='rgb',seed=42,subset='training'
                                                     )
 
-validation_generator = validation_datagen.flow_from_directory(validation_dir,
+validation_generator = train_datagen.flow_from_directory(train_dir,
                                                               batch_size=32,
-                                                              target_size=(150, 150),
+                                                              target_size=(224, 224),
                                                               class_mode='categorical',
-                                                              shuffle=False
+                                                              shuffle=True, color_mode='rgb',seed=42,subset='validation'
                                                               )
 
 # test_generator = test_datagen.flow_from_directory(validation_dir,
@@ -74,7 +52,28 @@ class myCallback(tf.keras.callbacks.Callback):
             print("\nAcc dan Val_acc sudah mencapai lebih dari 95%, berhenti training !!!")
             self.model.stop_training=True
 
-history = model.fit(train_generator, epochs=50, validation_data=validation_generator, validation_steps=1, callbacks= myCallback())
+model = tf.keras.models.Sequential([
+    tf.keras.layers.Conv2D(20, (3, 3), activation='relu', input_shape=(224, 224, 3)),
+    tf.keras.layers.MaxPooling2D(2, 2),
+    tf.keras.layers.Conv2D(32, (3, 3), activation='relu'),
+    tf.keras.layers.MaxPooling2D(2, 2, padding='valid'),
+    tf.keras.layers.Conv2D(48, (3, 3), activation='relu'),
+    tf.keras.layers.MaxPooling2D(2, 2),
+    tf.keras.layers.Conv2D(50, (3, 3), activation='relu'),
+    tf.keras.layers.MaxPooling2D(2, 2),
+    tf.keras.layers.Conv2D(128, (3, 3), activation='relu'),
+    tf.keras.layers.MaxPooling2D(2, 2),
+    tf.keras.layers.Flatten(),
+    tf.keras.layers.Dropout(0.5),
+    tf.keras.layers.Dense(512, activation='relu'),
+    tf.keras.layers.Dense(len(categories), activation='softmax')
+])
+
+model.compile(optimizer=Adam(), loss='categorical_crossentropy', metrics=['accuracy'])
+
+model.summary()
+
+history = model.fit(train_generator, epochs=50, validation_data=validation_generator, validation_steps=10, callbacks= myCallback())
 
 acc = history.history['accuracy']
 val_acc = history.history['val_accuracy']
@@ -96,4 +95,4 @@ plt.legend()
 
 plt.show()
 
-model.save("veggiehealth_model_2.h5")
+model.save("veggiehealth_model_5.h5")
