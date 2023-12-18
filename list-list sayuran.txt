@@ -1,25 +1,17 @@
-list-list sayuran (train/validation/test)(default: 1200/200/200)total=1600:
--Tomat / Tomato
--bayam_hijau+ (updated_15_12_2023)(150/25/25)total=200
--Bayam(Merah)+
--wortel / Carrot
--kol / Cabbage
--brokoli / Broccoli
--kembang kol / Cauliflower
--timun / Cucumber
--kentang / potato
--kancang panjang / String_bean +(updated_14-12-2023)(187/31/32)total=250
--pare / bitter_groud
--sawi / collard_greens +
--sawi_hijau+(updated_15_12_2023)(150/25/25)total=200
--sawi_putih+(updated_15_12_2023)(150/25/25)total=200
--Daun singkong / Cassava_leaves +(updated_15_12_2023)(225/37/38)total=300
--Kangkung / water_spinach +(updated_14-12-2023)(150/25/25)total=200
--terong / Brinjal
--tauge / bean_sprouts +(updated_14-12-2023)(168/28/29)total=225
--melinjo / Gnetum_gnemon + (updated_14-12-2023)(168/28/29)total=225
--j.kancing / table_mushrooms +
--j.merang / chinese_mushroom +
--j.timur / King_Oyster_Mushroom +
--j.kuping / Black_Fungus +
--j.enoki / Enoki_mushrooms +  (98/18/22)
+list-list sayuran:
+-Bean (kacang polong)
+-Bitter_Groud (Pare)
+-Bottle_Gourd (labu air)
+-Brinjal(Terong)
+-Broccoli(Brokoli)
+-Cabbage (Kol)
+-Capiscium(paprika)
+-Carrot(wortel)
+-Cauliflower(kembang kol)
+-Cucumber(ketimun)
+-Papaya(pepaya muda)
+-Potato (kentang)
+-pumpkin(labu kuning)
+-radish (lobak)
+-Tomato (tomat)
+

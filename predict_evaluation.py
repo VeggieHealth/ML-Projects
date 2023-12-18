@@ -3,8 +3,10 @@ from keras.preprocessing.image import ImageDataGenerator
 import numpy as np
 import matplotlib.pyplot as plt
 import os
+import seaborn as sns
+from sklearn.metrics import confusion_matrix
 
-model = tf.keras.models.load_model('veggiehealth_model_5.h5')
+model = tf.keras.models.load_model('veggiehealth_model_tf_origin.h5')
 
 val_dir = "..\\ML-Projects\\Vegetable Images\\validation\\"
 test_dir ="..\\ML-Projects\\Vegetable Images\\test\\"
@@ -41,8 +43,7 @@ for i in predictions:
     result = labels[np.argmax(i)]
     print(result)
 
-import seaborn as sns
-from sklearn.metrics import confusion_matrix
+
 
 y_pred_class = np.argmax(predictions, axis=1)
 y_true_class = test_data.classes
