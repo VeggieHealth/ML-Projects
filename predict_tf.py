@@ -8,13 +8,14 @@ import seaborn as sns
 from sklearn.metrics import confusion_matrix
 from tensorflow.python.keras.models import load_model
 
-model = tf.keras.models.load_model('veggiehealth_model_tf_origin.h5')
+model = tf.keras.models.load_model('veggiehealth_model_tf_origin_2.h5')
 
 test_dir = "..\\ML-Projects\\Vegetable Images\\test\\"
 train_dir = "..\\ML-Projects\\Vegetable Images\\train\\"
 validation_dir = "..\\ML-Projects\\Vegetable Images\\validation\\"
 
 test = 'D:\\Games\\'
+test_2 = '..\\ML-Projects\\Vegetable Images\\test\\Bottle_Gourd\\'
 
 validation_datagen = ImageDataGenerator(rescale=1. / 255)
 test_datagen = ImageDataGenerator(rescale=1. / 255)
@@ -31,8 +32,8 @@ test_datagen_generator = test_datagen.flow_from_directory(
 
 # loss, acc = model.evaluate(validation_generator, verbose=1)
 # print('Restored model, accuracy: {:5.2f}%'.format(100 * acc))
-#
-# print("Done!")
+
+print("Done!")
 
 category = dict(enumerate(os.listdir(test_dir)))
 
@@ -49,7 +50,7 @@ def predict_image(filename, model):
     plt.imshow(img_array)
     plt.show()
 
-predict_image(os.path.join(test,'WhatsApp Image 2023-12-18 at 22.21.02_52022520.jpg'),model)
+predict_image(os.path.join(test,'png-transparent-cucumber-spreewald-gherkins-fruit-cucumbers-girls-pickled-cucumber-vegetables.png'),model)
 
 def predict_dir(filedir, model):
     cols = 3

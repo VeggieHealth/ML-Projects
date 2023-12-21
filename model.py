@@ -20,21 +20,24 @@ train_datagen = ImageDataGenerator(rescale=1 / 255,
                                    horizontal_flip=True,
                                    vertical_flip=True,validation_split=0.1)
 
-validation_datagen = ImageDataGenerator(rescale=1 / 255)
+validation_datagen = ImageDataGenerator(rescale=1. / 255)
 # test_datagen = ImageDataGenerator(rescale=1 / 255)
 
+train_batch = 64
+validation_batch = 32
+
 train_generator = train_datagen.flow_from_directory(train_dir,
-                                                    batch_size=64,
+                                                    batch_size=train_batch,
                                                     target_size=(224, 224),
                                                     class_mode='categorical',
-                                                    shuffle=True, color_mode='rgb',seed=42,subset='training'
+                                                    shuffle=True, seed=42,subset='training'
                                                     )
 
 validation_generator = train_datagen.flow_from_directory(train_dir,
-                                                              batch_size=32,
+                                                              batch_size=validation_batch,
                                                               target_size=(224, 224),
                                                               class_mode='categorical',
-                                                              shuffle=True, color_mode='rgb',seed=42,subset='validation'
+                                                              shuffle=True, seed=42,subset='validation'
                                                               )
 
 # test_generator = test_datagen.flow_from_directory(validation_dir,
@@ -61,7 +64,7 @@ model = tf.keras.models.Sequential([
     tf.keras.layers.MaxPooling2D(2, 2),
     tf.keras.layers.Conv2D(50, (3, 3), activation='relu'),
     tf.keras.layers.MaxPooling2D(2, 2),
-    tf.keras.layers.Conv2D(128, (3, 3), activation='relu'),
+    tf.keras.layers.Conv2D(64, (3, 3), activation='relu'),
     tf.keras.layers.MaxPooling2D(2, 2),
     tf.keras.layers.Flatten(),
     tf.keras.layers.Dropout(0.5),
@@ -73,7 +76,7 @@ model.compile(optimizer=Adam(), loss='categorical_crossentropy', metrics=['accur
 
 model.summary()
 
-history = model.fit(train_generator, epochs=50, validation_data=validation_generator, validation_steps=10, callbacks= myCallback())
+history = model.fit(train_generator, epochs=30, validation_data=validation_generator, steps_per_epoch= 13500 /train_batch, callbacks= myCallback())
 
 acc = history.history['accuracy']
 val_acc = history.history['val_accuracy']
@@ -95,4 +98,4 @@ plt.legend()
 
 plt.show()
 
-model.save("veggiehealth_model_5.h5")
+model.save("veggiehealth_model_origin.h5")

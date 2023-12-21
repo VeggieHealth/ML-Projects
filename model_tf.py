@@ -1,23 +1,10 @@
-import numpy as np
-import pandas as pd
-import seaborn as sns
-from PIL import Image
-from PIL import ImageEnhance
-from skimage.io import imread
 import matplotlib.pyplot as plt
-
-import os, random, pathlib, warnings, itertools, math
-warnings.filterwarnings("ignore")
-
+import os
 import tensorflow as tf
 import keras.backend as K
-from sklearn.metrics import confusion_matrix
-
-from keras import models
 from keras.models import Model
-from keras.models import load_model
 from keras.preprocessing import image
-from keras.applications.inception_v3 import InceptionV3,preprocess_input
+from keras.applications.inception_v3 import InceptionV3, preprocess_input
 from keras.layers import Dense, Flatten, GlobalAveragePooling2D, Dense, Dropout
 
 K.clear_session()
@@ -28,102 +15,99 @@ test_dir = "..\\ML-Projects\\Vegetable Images\\test\\"
 
 categories = len(os.listdir(train_dir))
 
-def count_files(rootdir):
-    '''counts the number of files in each subfolder in a directory'''
-    for path in pathlib.Path(rootdir).iterdir():
-        if path.is_dir():
-            print("There are " + str(len([name for name in os.listdir(path) \
-                                          if os.path.isfile(os.path.join(path, name))])) + " files in " + \
-                  str(path.name))
-
-
-# count_files(os.path.join(validation_dir))
-
-image_folder ='water_spinach'  # The vegetable you want to display
-number_of_images = 2  # Number of images to display
-
-def preprocess():
-    j = 1
-    for i in range(number_of_images):
-        folder = os.path.join(validation_dir, image_folder)
-        a = random.choice(os.listdir(folder))
-
-        image = Image.open(os.path.join(folder, a))
-        image_duplicate = image.copy()
-        plt.figure(figsize=(10, 10))
-
-        plt.subplot(number_of_images, 2, j)
-        plt.title(label='Orignal', size=17, pad='7.0', loc="center", fontstyle='italic')
-        plt.imshow(image)
-        plt.show()
-        j += 1
-
-        image1 = ImageEnhance.Color(image_duplicate).enhance(1.35)
-        image1 = ImageEnhance.Contrast(image1).enhance(1.45)
-        image1 = ImageEnhance.Sharpness(image1).enhance(2.5)
-
-        plt.subplot(number_of_images, 2, j)
-        plt.title(label='Processed', size=17, pad='7.0', loc="center", fontstyle='italic')
-        plt.imshow(image1)
-        plt.show()
-        j += 1
-# preprocess()
-
-train_datagen = image.ImageDataGenerator(rescale = 1./255,
-                                         height_shift_range=0.2,
+train_datagen = image.ImageDataGenerator(rescale=1. / 255,
+                                         rotation_range=10,
                                          width_shift_range=0.2,
-                                         rotation_range=0.5,
-                                         shear_range=0.2,
+                                         height_shift_range=0.2,
                                          fill_mode='nearest',
                                          horizontal_flip=True,
-                                         vertical_flip=True, validation_split=0.1
+                                         validation_split=0.1
                                          )
+# dir_It = train_datagen.flow_from_directory(
+#     train_dir,
+#     batch_size=1,
+#     save_to_dir="D:\\Games\\",
+#     save_prefix="",
+#     save_format='png',
+# )
+#
+# for _ in range(5):
+#     img, label = dir_It.next()
+#     print(img.shape)
+#     plt.imshow(img[0])
+#     plt.show()
+
 training_set = train_datagen.flow_from_directory(
     train_dir,
-    target_size = (224, 224),
-    batch_size = 64,
-    class_mode = 'categorical', subset='training')
+    target_size=(224, 224),
+    batch_size=64,
+    class_mode='categorical', subset='training')
 
 validation_set = train_datagen.flow_from_directory(
     train_dir,
-    target_size = (224, 224),
-    batch_size = 64,
-    class_mode = 'categorical', subset='validation')
+    target_size=(224, 224),
+    batch_size=64,
+    class_mode='categorical', subset='validation')
 
 IMAGE_SIZE = [224, 224]
 
-inception = InceptionV3(input_shape= (224,224,3), weights='imagenet', include_top=False)
+pre_trained = InceptionV3(input_shape=(224, 224, 3), weights='imagenet', include_top=False)
 
-for layer in inception.layers:
+for layer in pre_trained.layers:
     layer.trainable = False
 
-x = inception.output
-x = GlobalAveragePooling2D()(x)
-x = Dense(128,activation='relu')(x)
-x = Dropout(0.2)(x)
+x = pre_trained.output
+x = Flatten()(x)
+x = Dense(512, activation='relu')(x)
+x = Dense(128, activation='relu')(x)
+x = Dropout(0.5)(x)
+
+
 
 prediction = Dense(categories, activation='softmax')(x)
 
-model = Model(inputs=inception.input, outputs=prediction)
+model = Model(inputs=pre_trained.input, outputs=prediction)
 
 model.compile(
-  loss='categorical_crossentropy',
-  optimizer='adam',
-  metrics=['accuracy']
+    loss='categorical_crossentropy',
+    optimizer='adam',
+    metrics=['accuracy']
 )
+
+
 class myCallback(tf.keras.callbacks.Callback):
     def on_epoch_end(self, epoch, logs=None):
         if logs is None:
             logs = {}
-        if(logs.get('accuracy')>0.95 and logs.get('val_accuracy')>0.93):
+        if (logs.get('accuracy') > 0.95 and logs.get('val_accuracy') > 0.93):
             print("\nAcc dan Val_acc sudah mencapai lebih dari 95%, berhenti training !!!")
-            self.model.stop_training=True
+            self.model.stop_training = True
 
-r = model.fit_generator(
-  training_set,
-  validation_data=validation_set,
-  epochs=20,
-  steps_per_epoch=len(training_set), callbacks= myCallback()
+
+history = model.fit_generator(
+    training_set,
+    validation_data=validation_set,
+    epochs=20,
+    steps_per_epoch=len(training_set), callbacks=myCallback()
 )
+acc = history.history['accuracy']
+val_acc = history.history['val_accuracy']
+loss = history.history['loss']
+val_loss = history.history['val_loss']
 
-model.save("veggiehealth_model_tf_origin.h5")
+epochs = range(len(acc))
+
+plt.plot(epochs, acc, 'r', label='Training accuracy')
+plt.plot(epochs, val_acc, 'b', label='Validation accuracy')
+plt.title('Training and validation accuracy')
+
+plt.figure()
+
+plt.plot(epochs, loss, 'r', label='Training Loss')
+plt.plot(epochs, val_loss, 'b', label='Validation Loss')
+plt.title('Training and validation loss')
+plt.legend()
+
+plt.show()
+
+model.save("veggiehealth_model_tf_origin_2.h5")

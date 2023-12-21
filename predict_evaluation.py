@@ -6,7 +6,7 @@ import os
 import seaborn as sns
 from sklearn.metrics import confusion_matrix
 
-model = tf.keras.models.load_model('veggiehealth_model_tf_origin.h5')
+model = tf.keras.models.load_model('veggiehealth_model_tf_origin_2.h5')
 
 val_dir = "..\\ML-Projects\\Vegetable Images\\validation\\"
 test_dir ="..\\ML-Projects\\Vegetable Images\\test\\"
@@ -34,14 +34,14 @@ test_data = test_datagen.flow_from_directory(test_dir,
                                              shuffle=False)
 
 
-# loss, acc = model.evaluate(val_data, verbose=2)
-# print('Restored model, accuracy: {:5.2f}%'.format(100 * acc))
+loss, acc = model.evaluate(val_data, verbose=2)
+print('Restored model, accuracy: {:5.2f}%'.format(100 * acc))
 labels = dict(enumerate(os.listdir(test_dir)))
 print(labels)
 predictions = model.predict(test_data)
-for i in predictions:
-    result = labels[np.argmax(i)]
-    print(result)
+# for i in predictions:
+#     result = labels[np.argmax(i)]
+#     print(result)
 
 
 
